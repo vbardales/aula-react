@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialTable from 'material-table';
-// import MoreIcon from '@material-ui/icons/MoreHoriz';
-// import PlayIcon from '@material-ui/icons/PlayArrow';
+import MoreIcon from '@material-ui/icons/MoreHoriz';
+import PlayIcon from '@material-ui/icons/PlayArrow';
 import { withRouter } from 'react-router';
 import axios from 'axios';
 
@@ -14,15 +14,12 @@ class List extends React.PureComponent {
       error: null,
     };
   }
-  /*: [
-    { id: 101, name: 'All I Want For Chrismas Is You!', author: { lastname: 'Carey', firstname: 'Mariah' }, year: 1987 },
-  ]*/
 
   componentDidMount() {
     return axios.get('http://localhost:2000/song')
       .then((response) => {
         this.setState({
-          data: response.body,
+          data: response.data,
         });
       })
       .catch((error) => {
@@ -39,6 +36,22 @@ class List extends React.PureComponent {
     const columns = [
       { title: 'Name', field: 'name' },
     ];
+    const actions = [
+      {
+        icon: PlayIcon,
+        tooltip: 'Play',
+        onClick: (event, rowData) => {
+          // Do play operation
+        }
+      },
+      {
+        icon: MoreIcon,
+        tooltip: 'More',
+        onClick: (event, rowData) => {
+          history.push(`/song/${rowData.id}`);
+        }
+      }
+    ];
 
     if (error) {
       return <div>An unexpected error occured. Contact your admin sys.</div>
@@ -53,22 +66,7 @@ class List extends React.PureComponent {
         title="Songs"
         columns={columns}
         data={data}
-        actions={[
-          {
-            icon: 'PlayIcon',
-            tooltip: 'Play',
-            onClick: (event, rowData) => {
-              // Do play operation
-            }
-          },
-          {
-            icon: 'MoreIcon',
-            tooltip: 'More',
-            onClick: (event, rowData) => {
-              history.push(`/song/${rowData.id}`);
-            }
-          }
-        ]}
+        actions={actions}
       />
     );
   }
